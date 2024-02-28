@@ -50,9 +50,10 @@ then
 fi
 
 # added by BA, some of this was already in the file and commented out. 
-echo "Removing the old writer utility and compiling as a native application"
-make clean
-make
+# Removed for A3
+#echo "Removing the old writer utility and compiling as a native application"
+#make clean
+#make
 # end of BA additions
 
 for i in $( seq 1 $NUMFILES)

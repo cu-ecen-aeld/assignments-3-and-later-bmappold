@@ -1,4 +1,13 @@
 #include "systemcalls.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "stdarg.h"
+#include "sys/types.h"
+#include "unistd.h"
+#include "sys/wait.h"
+#include "fcntl.h"
+#include "stdbool.h"
+#include "string.h"
 
 /**
  * @param cmd the command to execute with system()
@@ -17,6 +26,12 @@ bool do_system(const char *cmd)
  *   or false() if it returned a failure
 */
 
+    int sys_status = system(cmd); 
+    if (sys_status == -1){
+        return false;
+    	// error message?
+    }
+    
     return true;
 }
 
@@ -47,7 +62,7 @@ bool do_exec(int count, ...)
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
     // and may be removed
-    command[count] = command[count];
+    //command[count] = command[count];
 
 /*
  * TODO:
@@ -58,7 +73,29 @@ bool do_exec(int count, ...)
  *   as second argument to the execv() command.
  *
 */
-
+   
+    //pid_t parent = getpid();
+    pid_t pid = fork();
+    
+    if (pid == -1) {
+    	//failed to fork
+    	//perror("Failed to Fork");
+    	return false;
+    }
+    else if (pid == 0) {
+    	//child
+    	if (execv(command[0], command) == -1) {
+    	    //perror("Failed to Execv");
+    	    exit(1); 
+    	}
+    	//return false;
+    }
+    else {
+    	int status;
+    	waitpid(pid, &status, 0);
+    	return false; //WIFEXITED(status) && (WEXITSTATUS(status) == 0);
+    }
+    
     va_end(args);
 
     return true;
@@ -92,6 +129,22 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   The rest of the behaviour is same as do_exec()
  *
 */
+    int status;
+    int kidpid;
+    int fd = open(outputfile, O_WRONLY|O_TRUNC|O_CREAT, 0644);
+    if (fd < 0) { perror("open"); abort(); }
+    switch (kidpid = fork()) {
+	case -1: return false;
+	case 0:
+	      if (dup2(fd, 1) == -1) return false;
+	      close(fd);
+  	      execv(command[0], command);
+	      exit(1);
+	  default:
+	      waitpid(kidpid, &status, 0);
+	      if(status !=0 ) return false;	    
+	      close(fd);
+    }
 
     va_end(args);
 
