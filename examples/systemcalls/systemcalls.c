@@ -1,12 +1,10 @@
 #include "systemcalls.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "stdarg.h"
 #include "sys/types.h"
 #include "unistd.h"
 #include "sys/wait.h"
 #include "fcntl.h"
-#include "stdbool.h"
 #include "string.h"
 
 /**
@@ -79,21 +77,18 @@ bool do_exec(int count, ...)
     
     if (pid == -1) {
     	//failed to fork
-    	//perror("Failed to Fork");
     	return false;
     }
-    else if (pid == 0) {
+    if (pid == 0) {
     	//child
-    	if (execv(command[0], command) == -1) {
-    	    //perror("Failed to Execv");
-    	    exit(1); 
-    	}
-    	//return false;
+	execv(command[0], command);
+    	exit(1); 
     }
     else {
+    	// parent
     	int status;
     	waitpid(pid, &status, 0);
-    	return false; //WIFEXITED(status) && (WEXITSTATUS(status) == 0);
+    	if(status !=0) return false; 
     }
     
     va_end(args);
