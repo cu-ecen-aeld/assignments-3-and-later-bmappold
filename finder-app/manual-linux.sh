@@ -90,6 +90,7 @@ make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
 echo "TEST 13"
 make CONFIG_PREFIX=${OUTDIR}/rootfs/ ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} install
 echo "TEST 14"
+cd ${OUTDIR}/rootfs
 
 echo "Library dependencies"
 ${CROSS_COMPILE}readelf -a bin/busybox | grep "program interpreter"
