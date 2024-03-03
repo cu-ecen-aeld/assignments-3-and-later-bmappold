@@ -130,12 +130,16 @@ cp ${FINDER_APP_DIR}/conf/assignment.txt ${OUTDIR}/rootfs/home
 cp ${FINDER_APP_DIR}/finder-test.sh ${OUTDIR}/rootfs/home
 cp ${FINDER_APP_DIR}/autorun-qemu.sh ${OUTDIR}/rootfs/home
 
+
 # TODO: Chown the root directory
 echo "TEST 23"
 sudo chown -R root:root ${OUTDIR}/rootfs
 
 # TODO: Create initramfs.cpio.gz
 echo "TEST 24"
+cd ${OUTDIR}/rootfs/home
+ls
+echo "TEST 24B"
 cd ${OUTDIR}/rootfs
 find . | cpio -H newc -ov --owner root:root > ${OUTDIR}/initramfs.cpio
 echo "TEST 25"
