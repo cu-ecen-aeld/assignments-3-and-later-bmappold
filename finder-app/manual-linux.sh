@@ -35,17 +35,12 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     git checkout ${KERNEL_VERSION}
 
     # TODO: Add your kernel build steps here
-    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper
-    echo "TEST 2"    
+    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper 
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} defconfig #from lecture video 
-    echo "TEST 3"
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc) all
-    echo "TEST 4"
     # do I need to add modules here? skipping per instructions
     # make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} modules
-    echo "TEST 5"
-    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} dtbs
-    echo "TEST 6"     
+    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} dtbs     
 fi
 cp ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ${OUTDIR} #copy the boot image to OUTDIR
 
@@ -63,8 +58,7 @@ fi
 # TODO: Create necessary base directories
 mkdir -p ${OUTDIR}/rootfs
 cd ${OUTDIR}/rootfs
-echo "TEST 7" #line 8568
-mkdir -pv bin dev etc home lib lib64 proc sbin sys tmp usr/bin usr/lib usr/sbin var/log
+mkdir -pv bin dev etc home/conf lib lib64 proc sbin sys tmp usr/bin usr/lib usr/sbin var/log
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/busybox" ]
@@ -73,23 +67,15 @@ git clone git://busybox.net/busybox.git
     cd busybox
     git checkout ${BUSYBOX_VERSION}
     # TODO:  Configure busybox
-    echo "TEST 8"
-    pwd
     make distclean
-    echo "TEST 9"
     make defconfig
-    echo "TEST 10"
 else
     cd busybox
-    echo "TEST 11"
 fi
 
 # TODO: Make and install busybox
-echo "TEST 12"
 make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
-echo "TEST 13"
 make CONFIG_PREFIX=${OUTDIR}/rootfs/ ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} install
-echo "TEST 14"
 cd ${OUTDIR}/rootfs
 
 echo "Library dependencies"
@@ -97,25 +83,18 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "program interpreter"
 ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 
 # TODO: Add library dependencies to rootfs
-echo "TEST 15"
 SYSROOT_DIR=$(realpath $(${CROSS_COMPILE}gcc --print-sysroot))
 #found from Linux Root Filesystems lecture 10:00
-echo "TEST 16"
 cp ${SYSROOT_DIR}/lib/ld-linux-aarch64.so.1 ${OUTDIR}/rootfs/lib
-echo "TEST 17"
 cp ${SYSROOT_DIR}/lib64/libc.so.6 ${OUTDIR}/rootfs/lib64
-echo "TEST 18"
 cp ${SYSROOT_DIR}/lib64/libm.so.6 ${OUTDIR}/rootfs/lib64
-echo "TEST 19"
 cp ${SYSROOT_DIR}/lib64/libresolv.so.2 ${OUTDIR}/rootfs/lib64
 
 # TODO: Make device nodes
-echo "TEST 20"
 sudo mknod -m 666 dev/null c 1 3 
 sudo mknod -m 666 dev/console c 5 1 
 
 # TODO: Clean and build the writer utility
-echo "TEST 21"
 cd ${FINDER_APP_DIR}
 make clean
 make CROSS_COMPILE=${CROSS_COMPILE}
@@ -123,26 +102,18 @@ cp ${FINDER_APP_DIR}/writer ${OUTDIR}/rootfs/home
 
 # TODO: Copy the finder related scripts and executables to the /home directory
 # on the target rootfs
-echo "TEST 22"
 cp ${FINDER_APP_DIR}/finder.sh ${OUTDIR}/rootfs/home
-cp ${FINDER_APP_DIR}/conf/username.txt ${OUTDIR}/rootfs/home
-cp ${FINDER_APP_DIR}/conf/assignment.txt ${OUTDIR}/rootfs/home
+cp ${FINDER_APP_DIR}/conf/username.txt ${OUTDIR}/rootfs/home/conf
+cp ${FINDER_APP_DIR}/conf/assignment.txt ${OUTDIR}/rootfs/home/conf
 cp ${FINDER_APP_DIR}/finder-test.sh ${OUTDIR}/rootfs/home
 cp ${FINDER_APP_DIR}/autorun-qemu.sh ${OUTDIR}/rootfs/home
 
 
 # TODO: Chown the root directory
-echo "TEST 23"
 sudo chown -R root:root ${OUTDIR}/rootfs
 
 # TODO: Create initramfs.cpio.gz
-echo "TEST 24"
-cd ${OUTDIR}/rootfs/home
-ls
-echo "TEST 24B"
 cd ${OUTDIR}/rootfs
 find . | cpio -H newc -ov --owner root:root > ${OUTDIR}/initramfs.cpio
-echo "TEST 25"
 cd ../
-pwd
 gzip -f initramfs.cpio
