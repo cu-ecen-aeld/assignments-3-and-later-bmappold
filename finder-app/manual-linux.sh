@@ -65,7 +65,7 @@ fi
 mkdir -p ${OUTDIR}/rootfs
 cd ${OUTDIR}/rootfs
 echo "TEST 7"
-mkdir -pv {bin, dev, etc, home, lib, lib64, proc, sbin, sys, tmp, usr/{bin, lib, sbin}, var/log}
+mkdir -pv bin, dev, etc, home, lib, lib64, proc, sbin, sys, tmp, usr/bin, usr/lib, usr/sbin, var/log
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/busybox" ]
@@ -123,6 +123,7 @@ cp ${FINDER_APP_DIR}/writer ${OUTDIR}/rootfs/home
 
 # TODO: Copy the finder related scripts and executables to the /home directory
 # on the target rootfs
+echo "TEST 22"
 cp ${FINDER_APP_DIR}/finder.sh ${OUTDIR}/rootfs/home
 cp ${FINDER_APP_DIR}/conf/username.txt ${OUTDIR}/rootfs/home
 cp ${FINDER_APP_DIR}/conf/assignment.txt ${OUTDIR}/rootfs/home
@@ -130,9 +131,14 @@ cp ${FINDER_APP_DIR}/finder-test.sh ${OUTDIR}/rootfs/home
 cp ${FINDER_APP_DIR}/autorun-qemu.sh ${OUTDIR}/rootfs/home
 
 # TODO: Chown the root directory
+echo "TEST 23"
 sudo chown -R root:root ${OUTDIR}/rootfs
 
 # TODO: Create initramfs.cpio.gz
+echo "TEST 24"
 cd ${OUTDIR}/rootfs
 find . | cpio -H newc -ov --owner root:root > ${OUTDIR}/initramfs.cpio
+echo "TEST 25"
+cd ../
+pwd
 gzip -f initramfs.cpio
