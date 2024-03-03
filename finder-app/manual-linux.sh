@@ -111,8 +111,12 @@ cp ${SYSROOT_DIR}/lib64/libresolv.so.2 ${OUTDIR}/rootfs/lib64
 
 # TODO: Make device nodes
 echo "TEST 20"
+pwd
+cd ${OUTDIR}/rootfs
+pwd
+ls
 sudo mknod -m 666 dev/null c 1 3 
-sudo mknod -m 666 dev/vonsole c 5 1 
+sudo mknod -m 666 dev/console c 5 1 
 
 # TODO: Clean and build the writer utility
 echo "TEST 21"
