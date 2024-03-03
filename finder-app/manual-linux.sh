@@ -37,7 +37,6 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     # TODO: Add your kernel build steps here
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper
     echo "TEST 2"    
-    #cp /boot/config-$(uname -r) .config #learned from Ubuntu Wiki
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} defconfig #from lecture video 
     echo "TEST 3"
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc) all
@@ -64,7 +63,7 @@ fi
 # TODO: Create necessary base directories
 mkdir -p ${OUTDIR}/rootfs
 cd ${OUTDIR}/rootfs
-echo "TEST 7"
+echo "TEST 7" #line 8568
 mkdir -pv bin, dev, etc, home, lib, lib64, proc, sbin, sys, tmp, usr/bin, usr/lib, usr/sbin, var/log
 
 cd "$OUTDIR"
@@ -87,9 +86,9 @@ fi
 
 # TODO: Make and install busybox
 echo "TEST 12"
-make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE}
+make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
 echo "TEST 13"
-make CONFIG_PREFIX=${OUTDIR}/rootfs ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} install
+make CONFIG_PREFIX=${OUTDIR}/rootfs/ ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} install
 echo "TEST 14"
 
 echo "Library dependencies"
