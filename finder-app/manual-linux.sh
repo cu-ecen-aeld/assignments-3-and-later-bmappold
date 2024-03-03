@@ -64,7 +64,7 @@ fi
 mkdir -p ${OUTDIR}/rootfs
 cd ${OUTDIR}/rootfs
 echo "TEST 7" #line 8568
-mkdir -pv bin, dev, etc, home, lib, lib64, proc, sbin, sys, tmp, usr/bin, usr/lib, usr/sbin, var/log
+mkdir -pv bin dev etc home lib lib64 proc sbin sys tmp usr/bin usr/lib usr/sbin var/log
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/busybox" ]
@@ -111,10 +111,6 @@ cp ${SYSROOT_DIR}/lib64/libresolv.so.2 ${OUTDIR}/rootfs/lib64
 
 # TODO: Make device nodes
 echo "TEST 20"
-pwd
-cd ${OUTDIR}/rootfs
-pwd
-ls
 sudo mknod -m 666 dev/null c 1 3 
 sudo mknod -m 666 dev/console c 5 1 
 
