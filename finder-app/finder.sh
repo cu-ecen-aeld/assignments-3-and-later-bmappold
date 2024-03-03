@@ -1,4 +1,4 @@
-#!/bin/sh
+
 #this is my first script, wish me luck
 #-->> luck
 #

@@ -63,7 +63,7 @@ fi
 
 # TODO: Create necessary base directories
 mkdir -p ${OUTDIR}/rootfs
-cd -p ${OUTDIR}/rootfs
+cd ${OUTDIR}/rootfs
 mkdir -p {bin, dev, etc, home, lib, lib64, proc, sbin, sys, tmp, usr/{bin, lib, sbin}, var/log}
 
 cd "$OUTDIR"
